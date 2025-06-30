@@ -1,6 +1,7 @@
 import { BadRequestException } from '~/globals/cores/error.core';
 import { UserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
+import { jwtProvider } from '~/globals/providers/jwt.provider';
 
 class AuthService {
   public async signUp(requestBody: any) {
@@ -21,10 +22,17 @@ class AuthService {
     });
 
     const createdUser = await user.save();
-    console.log(createdUser);
+    const JwtPayload = {
+      _id: createdUser._id.toString(),
+      name: createdUser.name,
+      email: createdUser.email
+    };
+
+    const accessToken = await jwtProvider.generateJWT(JwtPayload);
 
     return {
-      accessToken: ''
+      accessToken,
+      user: JwtPayload
     };
   }
 
