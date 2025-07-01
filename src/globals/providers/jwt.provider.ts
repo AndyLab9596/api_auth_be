@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { Jwt, SignOptions } from 'jsonwebtoken';
 
 interface JwtPayload {
   _id: string;
@@ -8,7 +8,18 @@ interface JwtPayload {
 
 class JwtProvider {
   public async generateJWT(payload: JwtPayload) {
-    return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: parseInt(process.env.JWT_EXPIRES!) });
+    return jwt.sign(payload, process.env.JWT_SECRET!, {
+      expiresIn: process.env.JWT_EXPIRES as SignOptions['expiresIn']
+    });
+  }
+
+  public verifyJWT(token: string) {
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET!);
+      return payload;
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 }
 
