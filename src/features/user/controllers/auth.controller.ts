@@ -11,7 +11,13 @@ class AuthController {
     });
   }
 
-  public async signIn(req: Request, res: Response) {}
+  public async signIn(req: Request, res: Response) {
+    const data = await authService.signIn(req.body);
+    return res.json({
+      message: 'Sign in successfully',
+      data
+    });
+  }
 
   public async getCurrentUser(req: Request, res: Response) {}
 
